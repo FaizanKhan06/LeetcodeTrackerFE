@@ -108,6 +108,7 @@ export default function AddProblemPage() {
       // wait for async call so navigation only happens after success
       await addProblem(problemData);
       router.push("/problems");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       // extract error message safely
       const msg =
@@ -132,6 +133,7 @@ export default function AddProblemPage() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateFormData = (field: keyof ProblemFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {

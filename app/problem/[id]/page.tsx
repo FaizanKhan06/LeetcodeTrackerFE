@@ -23,6 +23,7 @@ export default function ProblemDetailPage() {
   const { getProblem, deleteProblem } = useProblems();
 
   // local state for problem
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [problem, setProblem] = useState<any | null>(null);
 
   const handleDelete = async () => {

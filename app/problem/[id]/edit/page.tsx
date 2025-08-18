@@ -42,6 +42,7 @@ export default function EditProblemPage() {
   const router = useRouter();
   const { getProblem, updateProblem } = useProblems();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [problem, setProblem] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,6 +84,7 @@ export default function EditProblemPage() {
     fetchProblem();
   }, [params?.id, getProblem]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateFormData = (field: keyof ProblemFormData, value: any) => {
     setFormData((prev) => (prev ? { ...prev, [field]: value } : prev));
     if (errors[field]) {
