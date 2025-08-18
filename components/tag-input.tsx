@@ -9,14 +9,9 @@ import { X } from "lucide-react";
 interface TagInputProps {
   tags: string[];
   onTagsChange: (tags: string[]) => void;
-  suggestions?: string[];
 }
 
-export function TagInput({
-  tags,
-  onTagsChange,
-  suggestions = [],
-}: TagInputProps) {
+export function TagInput({ tags, onTagsChange }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
 
   const addTag = (tag: string) => {

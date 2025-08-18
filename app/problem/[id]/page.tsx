@@ -75,7 +75,8 @@ export default function ProblemDetailPage() {
           <CardContent className="py-12 text-center">
             <h2 className="text-2xl font-bold mb-2">Problem Not Found</h2>
             <p className="text-muted-foreground mb-4">
-              The problem you're looking for doesn't exist or has been removed.
+              The problem you&apos;re looking for doesn&apos;t exist or has been
+              removed.
             </p>
             <Button asChild>
               <Link href="/problems">View All Problems</Link>

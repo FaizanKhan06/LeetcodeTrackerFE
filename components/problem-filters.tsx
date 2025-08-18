@@ -44,20 +44,6 @@ export function ProblemFilters({
 }: ProblemFiltersProps) {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const handleSortChange = (sortField: string) => {
-    if (sortField === selectedSort) {
-      // toggle direction if same field
-      const newDir = sortDirection === "asc" ? "desc" : "asc";
-      setSortDirection(newDir);
-      onSortDirectionChange(newDir);
-    } else {
-      // new field: default ascending
-      setSortDirection("asc");
-      onSortDirectionChange("asc");
-      onSortChange(sortField);
-    }
-  };
-
   const clearFilters = () => {
     onSearchChange("");
     onDifficultyChange("all");

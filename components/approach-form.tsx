@@ -86,7 +86,8 @@ export function ApproachForm({
 
       {approaches.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          No approaches added yet. Click "Add Approach" to get started.
+          No approaches added yet. Click &quot;Add Approach&quot; to get
+          started.
         </p>
       )}
 
