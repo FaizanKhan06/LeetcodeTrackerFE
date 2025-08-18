@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,40 +15,6 @@ interface CodeBlockProps {
 export function CodeBlock({ code, language, title }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [hidden, setHidden] = useState(true);
-
-  useEffect(() => {
-    // Dynamic import for client-side Prism usage
-    (async () => {
-      const Prism = (await import("prismjs")).default;
-
-      // Import the language dynamically
-      switch (language) {
-        case "python":
-          await import("prismjs/components/prism-python");
-          break;
-        case "javascript":
-          await import("prismjs/components/prism-javascript");
-          break;
-        case "typescript":
-          await import("prismjs/components/prism-typescript");
-          break;
-        case "java":
-          await import("prismjs/components/prism-java");
-          break;
-        case "cpp":
-          await import("prismjs/components/prism-cpp");
-          break;
-        case "c":
-          await import("prismjs/components/prism-c");
-          break;
-      }
-
-      // Import Prism CSS dynamically
-      await import("prismjs/themes/prism-tomorrow.css");
-
-      Prism.highlightAll();
-    })();
-  }, [code, language]);
 
   const copyToClipboard = async () => {
     try {
@@ -101,18 +67,16 @@ export function CodeBlock({ code, language, title }: CodeBlockProps) {
         </div>
       </CardHeader>
       <CardContent className="relative">
-        <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm">
-          <code
-            className={`language-${language} font-mono ${
-              hidden ? "blur-sm select-none" : ""
-            }`}
-          >
+        {/* Code block */}
+        <pre className={`bg-muted p-4 rounded-md overflow-x-auto text-sm `}>
+          <code className={`font-mono ${hidden ? "blur-sm select-none" : ""}`}>
             {code}
           </code>
+          {/* Eye toggle button */}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-6"
+            className="absolute top-0 right-6"
             onClick={() => setHidden(!hidden)}
           >
             {hidden ? (
