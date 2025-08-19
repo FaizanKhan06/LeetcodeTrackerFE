@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -16,35 +15,34 @@ export default function SignInPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+    if (!email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!email.includes("@")) {
+      newErrors.email = "Invalid email format"
+    }
+    if (!password) newErrors.password = "Password is required"
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setErrors({}) // reset errors
 
-    const formErrors: { email?: string; password?: string } = {}
-
-    if (!email) {
-      formErrors.email = "Email is required"
-    } else if (!email.includes("@")) {
-      formErrors.email = "Invalid email address"
-    }
-
-    if (!password) {
-      formErrors.password = "Password is required"
-    }
-
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors)
+    if (!validateForm()) {
       setIsLoading(false)
       return
     }
 
     console.log("email:" + email + "\npassword:" + password)
 
-    // Mock authentication
+    // Mock signin - in real app, this would be an API call
     router.push("/dashboard")
     setIsLoading(false)
   }
@@ -58,11 +56,12 @@ export default function SignInPage() {
           </div>
           <CardTitle className="text-2xl text-center">Sign In</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your LeetCode tracker
+            Welcome back! Sign in to continue
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <CardContent className="space-y-4">
+            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -72,10 +71,12 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
-                className={errors.email ? "border-red-500" : ""}
+                className={errors.email ? "border-destructive" : ""}
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
+
+            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -86,7 +87,7 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className={errors.password ? "border-red-500" : ""}
+                  className={errors.password ? "border-destructive" : ""}
                 />
                 <Button
                   type="button"
@@ -96,16 +97,13 @@ export default function SignInPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
               </div>
-              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
           </CardContent>
+
           <CardFooter className="flex flex-col space-y-4 mt-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing In..." : "Sign In"}
