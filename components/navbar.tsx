@@ -44,14 +44,27 @@ function DarkModeToggle() {
     }
   }, []);
 
+  function setThemeColor(color: string) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", color);
+    else {
+      const m = document.createElement("meta");
+      m.setAttribute("name", "theme-color");
+      m.setAttribute("content", color);
+      document.head.appendChild(m);
+    }
+  }
+
   const toggleDarkMode = () => {
     if (isDark) {
       document.body.classList.remove("dark");
       localStorage.setItem("dark-mode", "false");
+      setThemeColor("#ffffff");
       setIsDark(false);
     } else {
       document.body.classList.add("dark");
       localStorage.setItem("dark-mode", "true");
+      setThemeColor("#000000");
       setIsDark(true);
     }
   };
