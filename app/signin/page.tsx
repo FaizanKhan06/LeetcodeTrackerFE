@@ -9,48 +9,35 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Code, Eye, EyeOff } from "lucide-react"
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setIsLoading(true)
 
     // Basic validation
     if (!email || !password) {
-      setError("Please fill in all fields")
       setIsLoading(false)
       return
     }
 
     if (!email.includes("@")) {
-      setError("Please enter a valid email address")
       setIsLoading(false)
       return
     }
 
-    // Mock authentication - in real app, this would be an API call
-    // setTimeout(() => {
-    //   const users = JSON.parse(localStorage.getItem("users") || "[]")
-    //   const user = users.find((u: any) => u.email === email && u.password === password)
+    console.log("email:"+email+"\npassword:"+password);
 
-    //   if (user) {
-    //     localStorage.setItem("currentUser", JSON.stringify(user))
-        router.push("/dashboard")
-      // } else {
-      //   setError("Invalid email or password")
-      // }
-      setIsLoading(false)
-    // }, 1000)
+    // Mock authentication - in real app, this would be an API call
+    router.push("/dashboard")
+    setIsLoading(false)
   }
 
   return (
@@ -67,11 +54,6 @@ export default function SignInPage() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
