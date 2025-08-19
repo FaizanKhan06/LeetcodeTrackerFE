@@ -1,18 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Code, BarChart3, Plus, List, Menu, X, Moon, Sun } from "lucide-react";
+import {
+  Code,
+  BarChart3,
+  Plus,
+  List,
+  Menu,
+  X,
+  Moon,
+  Sun,
+  User,
+  LogOut,
+} from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Problems", href: "/problems", icon: List },
   { name: "Add Problem", href: "/add-problem", icon: Plus },
+  { name: "Profile", href: "/profile", icon: User },
 ];
 
-// Dark Mode Toggle Component
 function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false);
 
@@ -46,21 +57,18 @@ function DarkModeToggle() {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // ✅ If we are on signin page, show only logo + DarkModeToggle
   if (pathname === "/signin" || pathname === "/signup") {
     return (
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo (not clickable) */}
             <div className="flex items-center space-x-2">
               <Code className="h-8 w-8 text-primary" />
               <span className="text-xl font-bold">LeetCode Tracker</span>
             </div>
-
-            {/* Dark Mode Toggle */}
             <DarkModeToggle />
           </div>
         </div>
@@ -72,13 +80,12 @@ export function Navbar() {
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo (clickable for other pages) */}
           <Link href="/dashboard" className="flex items-center space-x-2">
             <Code className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">LeetCode Tracker</span>
           </Link>
 
-          {/* Desktop nav */}
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-4">
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -97,6 +104,17 @@ export function Navbar() {
                 </Button>
               );
             })}
+
+            {/* Logout button (direct redirect) */}
+            <Button
+              variant="ghost"
+              className="flex items-center space-x-2"
+              onClick={() => router.push("/signin")}
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </Button>
+
             <DarkModeToggle />
           </div>
 
@@ -108,17 +126,13 @@ export function Navbar() {
               size="icon"
               onClick={() => setMobileOpen((prev) => !prev)}
             >
-              {mobileOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {mobileOpen && (
         <div className="md:hidden border-t bg-background px-4 py-3 space-y-2">
           {navigation.map((item) => {
@@ -139,6 +153,19 @@ export function Navbar() {
               </Button>
             );
           })}
+
+          {/* Mobile Logout */}
+          <Button
+            variant="ghost"
+            className="w-full justify-start flex items-center space-x-2"
+            onClick={() => {
+              setMobileOpen(false);
+              router.push("/signin");
+            }}
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </Button>
         </div>
       )}
     </nav>
