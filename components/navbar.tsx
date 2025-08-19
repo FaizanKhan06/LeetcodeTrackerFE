@@ -108,7 +108,7 @@ export function Navbar() {
             {/* Logout button (direct redirect) */}
             <Button
               variant="ghost"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 cursor-pointer"
               onClick={() => router.push("/signin")}
             >
               <LogOut className="h-4 w-4" />
@@ -157,7 +157,7 @@ export function Navbar() {
           {/* Mobile Logout */}
           <Button
             variant="ghost"
-            className="w-full justify-start flex items-center space-x-2"
+            className="w-full justify-start flex items-center space-x-2 cursor-pointer"
             onClick={() => {
               setMobileOpen(false);
               router.push("/signin");
