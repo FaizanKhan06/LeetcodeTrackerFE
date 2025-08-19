@@ -16,26 +16,35 @@ export default function SignInPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setErrors({}) // reset errors
 
-    // Basic validation
-    if (!email || !password) {
+    let formErrors: { email?: string; password?: string } = {}
+
+    if (!email) {
+      formErrors.email = "Email is required"
+    } else if (!email.includes("@")) {
+      formErrors.email = "Invalid email address"
+    }
+
+    if (!password) {
+      formErrors.password = "Password is required"
+    }
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors)
       setIsLoading(false)
       return
     }
 
-    if (!email.includes("@")) {
-      setIsLoading(false)
-      return
-    }
+    console.log("email:" + email + "\npassword:" + password)
 
-    console.log("email:"+email+"\npassword:"+password);
-
-    // Mock authentication - in real app, this would be an API call
+    // Mock authentication
     router.push("/dashboard")
     setIsLoading(false)
   }
@@ -63,7 +72,9 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
+                className={errors.email ? "border-red-500" : ""}
               />
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -75,6 +86,7 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
+                  className={errors.password ? "border-red-500" : ""}
                 />
                 <Button
                   type="button"
@@ -84,9 +96,14 @@ export default function SignInPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
+              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 mt-4">
