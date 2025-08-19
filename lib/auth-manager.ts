@@ -2,8 +2,8 @@
 
 import { getToken, saveToken, saveWithExpiry, User } from "./token-manager";
 
-const API_BASE = process.env.BE_API_URL
-  ? `${process.env.BE_API_URL}/api/auth`
+const API_BASE = process.env.NEXT_PUBLIC_BE_API_URL
+  ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/auth`
   : "http://localhost:4000/api/auth";
 
 // Helper to handle JSON responses and 401 redirects

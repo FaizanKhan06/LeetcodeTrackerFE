@@ -3,8 +3,8 @@
 import type { Problem } from "./mock-data"
 import { getToken } from "./token-manager"
 
-const BASE_URL = process.env.BE_API_URL
-  ? `${process.env.BE_API_URL}/api/problems`
+const BASE_URL = process.env.NEXT_PUBLIC_BE_API_URL
+  ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/problems`
   : "http://localhost:4000/api/problems";
 
 // Helper to handle JSON responses and 401 redirects
