@@ -48,11 +48,31 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // ✅ If we are on signin page, show only logo + DarkModeToggle
+  if (pathname === "/signin") {
+    return (
+      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo (not clickable) */}
+            <div className="flex items-center space-x-2">
+              <Code className="h-8 w-8 text-primary" />
+              <span className="text-xl font-bold">LeetCode Tracker</span>
+            </div>
+
+            {/* Dark Mode Toggle */}
+            <DarkModeToggle />
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
+          {/* Logo (clickable for other pages) */}
           <Link href="/dashboard" className="flex items-center space-x-2">
             <Code className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">LeetCode Tracker</span>
