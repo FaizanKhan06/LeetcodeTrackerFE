@@ -45,12 +45,6 @@ export default function ProblemDetailPage() {
         try {
           const fetchedProblem = await getProblem(params.id as string);
           setProblem(fetchedProblem);
-
-          if (fetchedProblem) {
-            console.log("✅ Retrieved problem:", fetchedProblem);
-          } else {
-            console.warn("⚠️ Problem not found for id:", params.id);
-          }
         } catch (err) {
           console.error("❌ Error fetching problem:", err);
         }

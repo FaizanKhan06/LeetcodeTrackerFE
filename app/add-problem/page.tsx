@@ -126,8 +126,6 @@ export default function AddProblemPage() {
       } else {
         setFormError(msg);
       }
-
-      // console.error("Error saving problem:", err);
     } finally {
       setIsSubmitting(false);
     }

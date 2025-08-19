@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
 } from "lucide-react";
+import { clearToken } from "@/lib/token-manager";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
@@ -25,20 +26,32 @@ const navigation = [
 ];
 
 function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
+  // On mount, check localStorage
   useEffect(() => {
-    if (document.body.classList.contains("dark")) {
+    const savedMode = localStorage.getItem("dark-mode");
+    if (savedMode === "true") {
+      document.body.classList.add("dark");
       setIsDark(true);
+    } else {
+      document.body.classList.remove("dark");
+      setIsDark(false);
+      if (savedMode === null) {
+        // default to dark mode off
+        localStorage.setItem("dark-mode", "true");
+      }
     }
   }, []);
 
   const toggleDarkMode = () => {
     if (isDark) {
       document.body.classList.remove("dark");
+      localStorage.setItem("dark-mode", "false");
       setIsDark(false);
     } else {
       document.body.classList.add("dark");
+      localStorage.setItem("dark-mode", "true");
       setIsDark(true);
     }
   };
@@ -110,7 +123,10 @@ export function Navbar() {
             <Button
               variant="ghost"
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => router.push("/signin")}
+              onClick={() => {
+                clearToken();
+                router.push("/signin");
+              }}
             >
               <LogOut className="h-4 w-4" />
               <span>Logout</span>
@@ -127,7 +143,11 @@ export function Navbar() {
               size="icon"
               onClick={() => setMobileOpen((prev) => !prev)}
             >
-              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
@@ -161,6 +181,7 @@ export function Navbar() {
             className="w-full justify-start flex items-center space-x-2 cursor-pointer"
             onClick={() => {
               setMobileOpen(false);
+              clearToken();
               router.push("/signin");
             }}
           >
