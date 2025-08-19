@@ -49,6 +49,7 @@ function DarkModeToggle() {
       size="icon"
       onClick={toggleDarkMode}
       aria-label="Toggle Dark Mode"
+      classname="cursor-pointer"
     >
       {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
