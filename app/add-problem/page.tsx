@@ -74,6 +74,7 @@ export default function AddProblemPage() {
         new URL(formData.link);
       } catch (err) {
         newErrors.link = "Please enter a valid URL";
+        console.error(err);
       }
     }
 
