@@ -24,7 +24,7 @@ export default function SignInPage() {
     setIsLoading(true)
     setErrors({}) // reset errors
 
-    let formErrors: { email?: string; password?: string } = {}
+    const formErrors: { email?: string; password?: string } = {}
 
     if (!email) {
       formErrors.email = "Email is required"
