@@ -69,11 +69,12 @@ export default function AddProblemPage() {
     if (!formData.difficulty) newErrors.difficulty = "Difficulty is required";
     if (!formData.status) newErrors.status = "Status is required";
 
-    if (
-      formData.link &&
-      !/^https?:\/\/(www\.)?leetcode\.com\/.+/i.test(formData.link)
-    ) {
-      newErrors.link = "Please enter a valid LeetCode URL";
+    if (formData.link) {
+      try {
+        new URL(formData.link);
+      } catch (err) {
+        newErrors.link = "Please enter a valid URL";
+      }
     }
 
     if (formData.number && isNaN(Number(formData.number))) {
@@ -133,11 +134,33 @@ export default function AddProblemPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateFormData = (field: keyof ProblemFormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: value };
+
+      // Auto-generate link if title changes and link is empty or still default
+      if (
+        field === "title" &&
+        (!prev.link || prev.link.startsWith("https://leetcode.com/problems/"))
+      ) {
+        updated.link = generateLeetCodeLink(value);
+      }
+
+      return updated;
+    });
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
     if (formError) setFormError(null);
+  };
+
+  const generateLeetCodeLink = (title: string) => {
+    if (!title) return "";
+    const slug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-") // replace non-alphanumeric chars with dash
+      .replace(/^-+|-+$/g, ""); // remove leading/trailing dashes
+    return `https://leetcode.com/problems/${slug}/`;
   };
 
   return (
