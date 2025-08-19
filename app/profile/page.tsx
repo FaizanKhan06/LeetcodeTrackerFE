@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Code } from "lucide-react";
-import { getToken, getUser, saveWithExpiry } from "@/lib/token-manager";
+import { getToken, getUser } from "@/lib/token-manager";
 import { authManager } from "@/lib/auth-manager";
 
 export default function ProfilePage() {
@@ -73,9 +73,6 @@ export default function ProfilePage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const API_URL = "http://localhost:4000/api/auth/me";
-  const token = getToken();
-
   const saveName = async () => {
     if (!validate("name")) return;
     setGeneralError("");
@@ -85,8 +82,12 @@ export default function ProfilePage() {
       setName(data.name);
       setNewName("");
       setEditName(false);
-    } catch (err: any) {
-      setGeneralError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setGeneralError(err.message);
+      } else {
+        setGeneralError("An unexpected error occurred");
+      }
     }
   };
 
@@ -103,8 +104,12 @@ export default function ProfilePage() {
       setNewEmail("");
       setCurrentPassword("");
       setEditEmail(false);
-    } catch (err: any) {
-      setGeneralError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setGeneralError(err.message);
+      } else {
+        setGeneralError("An unexpected error occurred");
+      }
     }
   };
 
@@ -122,8 +127,12 @@ export default function ProfilePage() {
       setNewPassword("");
       setConfirmPassword("");
       setEditPassword(false);
-    } catch (err: any) {
-      setGeneralError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setGeneralError(err.message);
+      } else {
+        setGeneralError("An unexpected error occurred");
+      }
     }
   };
 

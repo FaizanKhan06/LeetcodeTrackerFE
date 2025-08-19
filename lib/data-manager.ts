@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import type { Problem } from "./mock-data"
 import { getToken } from "./token-manager"
 

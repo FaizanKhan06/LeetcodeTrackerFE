@@ -16,7 +16,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Code, Eye, EyeOff } from "lucide-react";
-import { saveToken, saveWithExpiry } from "@/lib/token-manager";
 import { authManager } from "@/lib/auth-manager";
 
 export default function SignInPage() {
@@ -52,8 +51,12 @@ export default function SignInPage() {
     try {
       await authManager.signIn({ email, password });
       router.push("/dashboard");
-    } catch (err: any) {
-      setErrors({ general: err.message });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrors({ general: err.message });
+      } else {
+        setErrors({ general: "An unexpected error occurred" });
+      }
     } finally {
       setIsLoading(false);
     }

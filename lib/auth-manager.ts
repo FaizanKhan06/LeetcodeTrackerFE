@@ -1,6 +1,6 @@
 "use client";
 
-import { getToken, saveToken, saveWithExpiry } from "./token-manager";
+import { getToken, saveToken, saveWithExpiry, User } from "./token-manager";
 
 const API_BASE = process.env.BE_API_URL
   ? `${process.env.BE_API_URL}/api/auth`
@@ -49,31 +49,31 @@ export interface UpdateProfileData {
 }
 
 export const authManager = {
-  signIn: async (data: SignInData) => {
+  signIn: async (data: SignInData): Promise<User> => {
     const res = await fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    const result = await json<{ token: string; user: any }>(res);
-    saveToken(result.token, JSON.stringify(result.user));
+    const result = await json<{ token: string; user: User }>(res);
+    saveToken(result.token, result.user); // no JSON.stringify needed
     return result.user;
   },
 
-  signUp: async (data: SignUpData) => {
+  signUp: async (data: SignUpData): Promise<User> => {
     const res = await fetch(`${API_BASE}/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    const result = await json<{ token: string; user: any }>(res);
-    saveToken(result.token, JSON.stringify(result.user));
+    const result = await json<{ token: string; user: User }>(res);
+    saveToken(result.token, result.user); // no JSON.stringify needed
     return result.user;
   },
 
-  updateProfile: async (data: UpdateProfileData) => {
+  updateProfile: async (data: UpdateProfileData): Promise<User> => {
     const token = getToken();
     if (!token) throw new Error("Unauthorized");
 
@@ -86,8 +86,8 @@ export const authManager = {
       body: JSON.stringify(data),
     });
 
-    const result = await json<any>(res);
-    saveWithExpiry("user", JSON.stringify(result));
+    const result = await json<User>(res);
+    saveWithExpiry<User>("user", result); // store as object, not string
     return result;
   },
 };
