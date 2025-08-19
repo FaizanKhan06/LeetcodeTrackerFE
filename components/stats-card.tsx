@@ -24,7 +24,7 @@ export function StatsCard({
   const getVariantStyles = () => {
     switch (variant) {
       case "success":
-        return "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
+        return "border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950"
       case "warning":
         return "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950"
       case "destructive":
