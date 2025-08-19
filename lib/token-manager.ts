@@ -3,7 +3,6 @@ export interface User {
   id: string
   name: string
   email: string
-  [key: string]: any // optional extra fields
 }
 
 // Save any value with expiry in localStorage

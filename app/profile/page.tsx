@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Code } from "lucide-react";
-import { getToken, getUser } from "@/lib/token-manager";
+import { getUser } from "@/lib/token-manager";
 import { authManager } from "@/lib/auth-manager";
 
 export default function ProfilePage() {
