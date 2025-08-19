@@ -49,7 +49,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // ✅ If we are on signin page, show only logo + DarkModeToggle
-  if (pathname === "/signin") {
+  if (pathname === "/signin" || pathname === "/signup") {
     return (
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
