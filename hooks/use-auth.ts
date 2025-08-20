@@ -104,6 +104,37 @@ export function useAuth() {
     router.push("/signin");
   };
 
+  const deleteAccount = async (password: string) => {
+    setLoading(true);
+    try {
+      const result = await authManager.deleteAccount(password);
+      // Clear user and token
+      clearToken();
+      setUser(null);
+      router.push("/signin");
+      return result;
+    } catch (err: any) {
+      if (err.message === "Unauthorized") handleUnauthorized();
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCurrentUserDetails = async () => {
+    setLoading(true);
+    try {
+      const userData = await authManager.getCurrentUser();
+      setUser(userData as User);
+      return (userData as User);
+    } catch {
+      handleUnauthorized();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return {
     user,
     loading,
@@ -114,5 +145,7 @@ export function useAuth() {
     requestPasswordReset,
     resetPassword,
     signOut,
+    deleteAccount,
+    getCurrentUserDetails,
   };
 }

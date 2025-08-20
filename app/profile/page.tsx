@@ -12,12 +12,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Code } from "lucide-react";
-import { clearToken, getUser } from "@/lib/token-manager";
-import { authManager } from "@/lib/auth-manager";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProfilePage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -39,15 +36,23 @@ export default function ProfilePage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState("");
 
+  const { deleteAccount, updateProfile, getCurrentUserDetails } = useAuth();
+  const [deletePassword, setDeletePassword] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   useEffect(() => {
-    const user = getUser();
-    if (user) {
-      setName(user.name || "");
-      setEmail(user.email || "");
-    } else {
-      clearToken();
-      router.push("/signin");
-    }
+    const fetchUser = async () => {
+      try {
+        const userData = await getCurrentUserDetails();
+        setName(userData?.name || "");
+        setEmail(userData?.email || "");
+
+      } catch (err: unknown) {
+        console.error(err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const validate = (section: "name" | "email" | "password") => {
@@ -81,7 +86,7 @@ export default function ProfilePage() {
     setGeneralError("");
 
     try {
-      const data = await authManager.updateProfile({ name: newName });
+      const data = await updateProfile({ name: newName });
       setName(data.name);
       setNewName("");
       setEditName(false);
@@ -99,7 +104,7 @@ export default function ProfilePage() {
     setGeneralError("");
 
     try {
-      const data = await authManager.updateProfile({
+      const data = await updateProfile({
         email: newEmail,
         currentPassword,
       });
@@ -121,7 +126,7 @@ export default function ProfilePage() {
     setGeneralError("");
 
     try {
-      await authManager.updateProfile({
+      await updateProfile({
         currentPassword,
         newPassword,
         confirmPassword,
@@ -139,8 +144,23 @@ export default function ProfilePage() {
     }
   };
 
+  const handleConfirmDelete = async () => {
+    if (!deletePassword) {
+      alert("Enter your password");
+      return;
+    }
+
+    try {
+      await deleteAccount(deletePassword);
+      alert("Account deleted successfully!");
+    } catch (err: any) {
+      alert(err.message || "An unexpected error occurred");
+    }
+  };
+
+
   return (
-    <div className="flex justify-center bg-background px-4">
+    <div className="flex flex-col justify-center items-center bg-background px-4 ">
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center justify-center mb-4">
@@ -364,6 +384,47 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Delete Account */}
+      <div className="space-y-2 pt-4">
+        {!confirmDelete ? (
+          <Button
+            variant="outline"
+            className="text-destructive hover:text-destructive"
+            onClick={() => setConfirmDelete(true)}
+          >
+            Delete Account
+          </Button>
+        ) : (
+          <div className="space-y-2">
+            <Input
+              type="password"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              placeholder="Enter your password to confirm"
+            />
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                className="text-destructive hover:text-destructive"
+                onClick={handleConfirmDelete}
+              >
+                Confirm Delete
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setConfirmDelete(false);
+                  setDeletePassword("");
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

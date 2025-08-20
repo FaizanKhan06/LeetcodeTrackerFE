@@ -108,4 +108,35 @@ export const authManager = {
 
     return json<{ message: string }>(res);
   },
+
+  deleteAccount: async (password: string): Promise<{ ok: boolean; message: string }> => {
+    const token = getToken();
+    if (!token) throw new Error("Unauthorized");
+
+    const res = await fetch(`${API_BASE}/me`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ password }),
+    });
+
+    return json<{ ok: boolean; message: string }>(res);
+  },
+
+  getCurrentUser: async (): Promise<User> => {
+    const token = getToken();
+    if (!token) throw new Error("Unauthorized");
+
+    const res = await fetch(`${API_BASE}/me`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const user = await json<{ name: string; email: string }>(res);
+    if (!user) throw new Error("No user found");
+    return user as User;
+  }
+
 };
