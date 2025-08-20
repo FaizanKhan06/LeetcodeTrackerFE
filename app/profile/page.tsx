@@ -36,6 +36,12 @@ export default function ProfilePage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState("");
 
+  // loading states
+  const [isSavingName, setIsSavingName] = useState(false);
+  const [isSavingEmail, setIsSavingEmail] = useState(false);
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const { deleteAccount, updateProfile, getCurrentUserDetails } = useAuth();
   const [deletePassword, setDeletePassword] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -46,12 +52,10 @@ export default function ProfilePage() {
         const userData = await getCurrentUserDetails();
         setName(userData?.name || "");
         setEmail(userData?.email || "");
-
       } catch (err: unknown) {
         console.error(err);
       }
     };
-
     fetchUser();
   }, []);
 
@@ -64,17 +68,14 @@ export default function ProfilePage() {
 
     if (section === "email") {
       if (!newEmail.trim()) newErrors.email = "Email is required";
-      else if (!newEmail.includes("@"))
-        newErrors.email = "Invalid email format";
+      else if (!newEmail.includes("@")) newErrors.email = "Invalid email format";
       if (!currentPassword) newErrors.currentPassword = "Password is required";
     }
 
     if (section === "password") {
-      if (!currentPassword)
-        newErrors.currentPassword = "Current password required";
+      if (!currentPassword) newErrors.currentPassword = "Current password required";
       if (!newPassword) newErrors.newPassword = "New password required";
-      if (newPassword !== confirmPassword)
-        newErrors.confirmPassword = "Passwords do not match";
+      if (newPassword !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -84,6 +85,7 @@ export default function ProfilePage() {
   const saveName = async () => {
     if (!validate("name")) return;
     setGeneralError("");
+    setIsSavingName(true);
 
     try {
       const data = await updateProfile({ name: newName });
@@ -91,56 +93,48 @@ export default function ProfilePage() {
       setNewName("");
       setEditName(false);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setGeneralError(err.message);
-      } else {
-        setGeneralError("An unexpected error occurred");
-      }
+      if (err instanceof Error) setGeneralError(err.message);
+      else setGeneralError("An unexpected error occurred");
+    } finally {
+      setIsSavingName(false);
     }
   };
 
   const saveEmail = async () => {
     if (!validate("email")) return;
     setGeneralError("");
+    setIsSavingEmail(true);
 
     try {
-      const data = await updateProfile({
-        email: newEmail,
-        currentPassword,
-      });
+      const data = await updateProfile({ email: newEmail, currentPassword });
       setEmail(data.email);
       setNewEmail("");
       setCurrentPassword("");
       setEditEmail(false);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setGeneralError(err.message);
-      } else {
-        setGeneralError("An unexpected error occurred");
-      }
+      if (err instanceof Error) setGeneralError(err.message);
+      else setGeneralError("An unexpected error occurred");
+    } finally {
+      setIsSavingEmail(false);
     }
   };
 
   const savePassword = async () => {
     if (!validate("password")) return;
     setGeneralError("");
+    setIsSavingPassword(true);
 
     try {
-      await updateProfile({
-        currentPassword,
-        newPassword,
-        confirmPassword,
-      });
+      await updateProfile({ currentPassword, newPassword, confirmPassword });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setEditPassword(false);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setGeneralError(err.message);
-      } else {
-        setGeneralError("An unexpected error occurred");
-      }
+      if (err instanceof Error) setGeneralError(err.message);
+      else setGeneralError("An unexpected error occurred");
+    } finally {
+      setIsSavingPassword(false);
     }
   };
 
@@ -150,37 +144,33 @@ export default function ProfilePage() {
       return;
     }
 
+    setIsDeleting(true);
     try {
       await deleteAccount(deletePassword);
+      alert("Account deleted successfully!");
+      setConfirmDelete(false);
+      setDeletePassword("");
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert(err.message);
-      } else {
-        alert("An unexpected error occurred");
-      }
+      if (err instanceof Error) alert(err.message);
+      else alert("An unexpected error occurred");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-
   return (
-    <div className="flex flex-col justify-center items-center bg-background px-4 ">
+    <div className="flex flex-col justify-center items-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center justify-center mb-4">
             <Code className="h-8 w-8 text-primary" />
           </div>
           <CardTitle className="text-2xl text-center">Profile</CardTitle>
-          <CardDescription className="text-center">
-            Manage your account details
-          </CardDescription>
+          <CardDescription className="text-center">Manage your account details</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {generalError && (
-            <p className="text-sm text-destructive text-center">
-              {generalError}
-            </p>
-          )}
+          {generalError && <p className="text-sm text-destructive text-center">{generalError}</p>}
 
           {/* Name */}
           <div className="space-y-2">
@@ -188,11 +178,7 @@ export default function ProfilePage() {
             {!editName ? (
               <div className="flex justify-between items-center">
                 <p>{name}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditName(true)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setEditName(true)}>
                   Edit
                 </Button>
               </div>
@@ -205,11 +191,11 @@ export default function ProfilePage() {
                   placeholder={name}
                   className={errors.name ? "border-destructive" : ""}
                 />
-                {errors.name && (
-                  <p className="text-sm text-destructive">{errors.name}</p>
-                )}
+                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                 <div className="flex space-x-2">
-                  <Button onClick={saveName}>Save</Button>
+                  <Button onClick={saveName} disabled={isSavingName}>
+                    {isSavingName ? "Saving..." : "Save"}
+                  </Button>
                   <Button variant="outline" onClick={() => setEditName(false)}>
                     Cancel
                   </Button>
@@ -224,11 +210,7 @@ export default function ProfilePage() {
             {!editEmail ? (
               <div className="flex justify-between items-center">
                 <p>{email}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditEmail(true)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setEditEmail(true)}>
                   Edit
                 </Button>
               </div>
@@ -241,9 +223,7 @@ export default function ProfilePage() {
                   placeholder={email}
                   className={errors.email ? "border-destructive" : ""}
                 />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                 <Input
                   type="password"
                   value={currentPassword}
@@ -251,13 +231,11 @@ export default function ProfilePage() {
                   placeholder="Current Password"
                   className={errors.currentPassword ? "border-destructive" : ""}
                 />
-                {errors.currentPassword && (
-                  <p className="text-sm text-destructive">
-                    {errors.currentPassword}
-                  </p>
-                )}
+                {errors.currentPassword && <p className="text-sm text-destructive">{errors.currentPassword}</p>}
                 <div className="flex space-x-2">
-                  <Button onClick={saveEmail}>Save</Button>
+                  <Button onClick={saveEmail} disabled={isSavingEmail}>
+                    {isSavingEmail ? "Saving..." : "Save"}
+                  </Button>
                   <Button variant="outline" onClick={() => setEditEmail(false)}>
                     Cancel
                   </Button>
@@ -272,26 +250,19 @@ export default function ProfilePage() {
             {!editPassword ? (
               <div className="flex justify-between items-center">
                 <p>********</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditPassword(true)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setEditPassword(true)}>
                   Edit
                 </Button>
               </div>
             ) : (
               <div className="space-y-2">
-                {/* current password */}
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="Current Password"
-                    className={
-                      errors.currentPassword ? "border-destructive" : ""
-                    }
+                    className={errors.currentPassword ? "border-destructive" : ""}
                   />
                   <Button
                     type="button"
@@ -300,20 +271,11 @@ export default function ProfilePage() {
                     className="absolute right-0 top-0 h-full px-3"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                {errors.currentPassword && (
-                  <p className="text-sm text-destructive">
-                    {errors.currentPassword}
-                  </p>
-                )}
+                {errors.currentPassword && <p className="text-sm text-destructive">{errors.currentPassword}</p>}
 
-                {/* new password */}
                 <div className="relative">
                   <Input
                     type={showNewPassword ? "text" : "password"}
@@ -329,29 +291,18 @@ export default function ProfilePage() {
                     className="absolute right-0 top-0 h-full px-3"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
-                    {showNewPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                {errors.newPassword && (
-                  <p className="text-sm text-destructive">
-                    {errors.newPassword}
-                  </p>
-                )}
+                {errors.newPassword && <p className="text-sm text-destructive">{errors.newPassword}</p>}
 
-                {/* confirm new password */}
                 <div className="relative">
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm New Password"
-                    className={
-                      errors.confirmPassword ? "border-destructive" : ""
-                    }
+                    className={errors.confirmPassword ? "border-destructive" : ""}
                   />
                   <Button
                     type="button"
@@ -360,25 +311,16 @@ export default function ProfilePage() {
                     className="absolute right-0 top-0 h-full px-3"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-destructive">
-                    {errors.confirmPassword}
-                  </p>
-                )}
+                {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
 
                 <div className="flex space-x-2">
-                  <Button onClick={savePassword}>Save</Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setEditPassword(false)}
-                  >
+                  <Button onClick={savePassword} disabled={isSavingPassword}>
+                    {isSavingPassword ? "Saving..." : "Save"}
+                  </Button>
+                  <Button variant="outline" onClick={() => setEditPassword(false)}>
                     Cancel
                   </Button>
                 </div>
@@ -411,8 +353,9 @@ export default function ProfilePage() {
                 variant="outline"
                 className="text-destructive hover:text-destructive"
                 onClick={handleConfirmDelete}
+                disabled={isDeleting}
               >
-                Confirm Delete
+                {isDeleting ? "Deleting..." : "Confirm Delete"}
               </Button>
               <Button
                 variant="outline"
@@ -427,7 +370,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-
     </div>
   );
 }
