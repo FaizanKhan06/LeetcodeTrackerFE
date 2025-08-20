@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import {
   getProblems,
   addProblem,
@@ -14,40 +15,41 @@ import {
 export function useProblems() {
   const [problems, setProblems] = useState<Problem[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  // Load problems from backend
+  const handleUnauthorized = () => {
+    router.push("/signin")
+  }
+
   useEffect(() => {
     refreshProblems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Fetch from backend
   const refreshProblems = async () => {
     setLoading(true)
     try {
-      const data = await getProblems()
+      const data = await getProblems(handleUnauthorized)
       setProblems(data)
     } finally {
       setLoading(false)
     }
   }
 
-  // Add problem
   const add = async (problemData: Omit<Problem, "id">) => {
-    const newProblem = await addProblem(problemData)
+    const newProblem = await addProblem(problemData, handleUnauthorized)
     await refreshProblems()
     return newProblem
   }
 
-  // Update problem
   const update = async (id: string, updates: Partial<Problem>) => {
-    const updatedProblem = await updateProblem(id, updates)
+    const updatedProblem = await updateProblem(id, updates, handleUnauthorized)
     await refreshProblems()
     return updatedProblem
   }
 
-  // Delete problem
   const remove = async (id: string) => {
-    const success = await deleteProblem(id)
+    const success = await deleteProblem(id, handleUnauthorized)
     if (success) await refreshProblems()
     return success
   }
@@ -62,6 +64,6 @@ export function useProblems() {
     updateProblem: update,
     deleteProblem: remove,
     refreshProblems,
-    getProblem, // already async from data-manager
+    getProblem: (id: string) => getProblem(id, handleUnauthorized),
   }
 }

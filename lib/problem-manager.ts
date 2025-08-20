@@ -23,15 +23,12 @@ export interface Problem {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BE_API_URL
   ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/problems`
-  : "http://localhost:4000/api/problems";
+  : "http://localhost:4000/api/problems"
 
 // Helper to handle JSON responses and 401 redirects
-async function json<T>(res: Response): Promise<T> {
+async function json<T>(res: Response, onUnauthorized?: () => void): Promise<T> {
   if (res.status === 401) {
-    // Navigate to /signin
-    if (typeof window !== "undefined") {
-      window.location.href = "/signin"
-    }
+    if (onUnauthorized) onUnauthorized()
     throw new Error("Unauthorized")
   }
 
@@ -48,7 +45,7 @@ async function json<T>(res: Response): Promise<T> {
 }
 
 // Get all problems
-export async function getProblems(): Promise<Problem[]> {
+export async function getProblems(onUnauthorized?: () => void): Promise<Problem[]> {
   const token = getToken()
   const res = await fetch(BASE_URL, {
     method: "GET",
@@ -58,11 +55,11 @@ export async function getProblems(): Promise<Problem[]> {
     },
     cache: "no-store",
   })
-  return json<Problem[]>(res)
+  return json<Problem[]>(res, onUnauthorized)
 }
 
 // Get one problem
-export async function getProblem(id: string): Promise<Problem | null> {
+export async function getProblem(id: string, onUnauthorized?: () => void): Promise<Problem | null> {
   const token = getToken()
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "GET",
@@ -73,11 +70,14 @@ export async function getProblem(id: string): Promise<Problem | null> {
     cache: "no-store",
   })
   if (res.status === 404) return null
-  return json<Problem>(res)
+  return json<Problem>(res, onUnauthorized)
 }
 
 // Add a new problem
-export async function addProblem(problemData: Omit<Problem, "id">): Promise<Problem> {
+export async function addProblem(
+  problemData: Omit<Problem, "id">,
+  onUnauthorized?: () => void
+): Promise<Problem> {
   const token = getToken()
   const res = await fetch(BASE_URL, {
     method: "POST",
@@ -87,11 +87,15 @@ export async function addProblem(problemData: Omit<Problem, "id">): Promise<Prob
     },
     body: JSON.stringify(problemData),
   })
-  return json<Problem>(res)
+  return json<Problem>(res, onUnauthorized)
 }
 
 // Update existing problem
-export async function updateProblem(id: string, updates: Partial<Problem>): Promise<Problem> {
+export async function updateProblem(
+  id: string,
+  updates: Partial<Problem>,
+  onUnauthorized?: () => void
+): Promise<Problem> {
   const token = getToken()
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
@@ -101,11 +105,11 @@ export async function updateProblem(id: string, updates: Partial<Problem>): Prom
     },
     body: JSON.stringify(updates),
   })
-  return json<Problem>(res)
+  return json<Problem>(res, onUnauthorized)
 }
 
 // Delete a problem
-export async function deleteProblem(id: string): Promise<boolean> {
+export async function deleteProblem(id: string, onUnauthorized?: () => void): Promise<boolean> {
   const token = getToken()
   const res = await fetch(`${BASE_URL}/${id}`, { 
     method: "DELETE", 
@@ -115,9 +119,14 @@ export async function deleteProblem(id: string): Promise<boolean> {
     }, 
   })
   if (res.status === 404) return false
+  if (res.status === 401) {
+    if (onUnauthorized) onUnauthorized()
+    throw new Error("Unauthorized")
+  }
   return true
 }
 
+// Compute statistics
 export function getStatistics(problems: Problem[]) {
   const total = problems.length
   const solved = problems.filter((p) => p.status === "Solved").length
