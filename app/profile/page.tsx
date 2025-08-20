@@ -53,7 +53,7 @@ export default function ProfilePage() {
     };
 
     fetchUser();
-  }, [getCurrentUserDetails]);
+  }, []);
 
   const validate = (section: "name" | "email" | "password") => {
     const newErrors: Record<string, string> = {};
