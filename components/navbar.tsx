@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Code,
   BarChart3,
-  Plus,
   List,
   Menu,
   X,
@@ -15,13 +14,14 @@ import {
   Sun,
   User,
   LogOut,
+  Book,
 } from "lucide-react";
 import { clearToken } from "@/lib/token-manager";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Problems", href: "/problems", icon: List },
-  { name: "Add Problem", href: "/add-problem", icon: Plus },
+  { name: "Cheetsheet", href: "/cheetsheet", icon: Book },
   { name: "Profile", href: "/profile", icon: User },
 ];
 

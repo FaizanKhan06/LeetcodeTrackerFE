@@ -4,6 +4,9 @@ import { useState, useMemo } from "react";
 import { ProblemFilters } from "@/components/problem-filters";
 import { ProblemCard } from "@/components/problem-card";
 import { useProblems } from "@/hooks/use-problems";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 export default function ProblemsPage() {
   const { problems, loading, deleteProblem } = useProblems();
@@ -106,26 +109,41 @@ export default function ProblemsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
+        <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Problems</h1>
           <p className="text-muted-foreground">
-            Browse and manage your LeetCode problems
+            Browse and manage your LeetCode problems.
           </p>
         </div>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading problems...</p>
-        </div>
+        <Link href="/add-problem">
+          <Button className="flex items-center gap-2 cursor-pointer">
+            <PlusCircle className="hidden sm:inline h-4 w-4" />
+            <span className="hidden sm:inline">Add Problem</span>
+            <span className="inline sm:hidden">Add New</span>
+          </Button>
+        </Link>
+      </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Problems</h1>
-        <p className="text-muted-foreground">
-          Browse and manage your LeetCode problems
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Problems</h1>
+          <p className="text-muted-foreground">
+            Browse and manage your LeetCode problems.
+          </p>
+        </div>
+        <Link href="/add-problem">
+          <Button className="flex items-center gap-2">
+            <PlusCircle className="hidden sm:inline h-4 w-4" />
+            <span className="hidden sm:inline">Add Problem</span>
+            <span className="inline sm:hidden">Add New</span>
+          </Button>
+        </Link>
       </div>
 
       <ProblemFilters
