@@ -16,19 +16,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
+import { useCheatSheets } from "@/hooks/use-cheatsheets";
+import { CheatSheet } from "@/lib/cheatsheet-manager";
 
-interface CheatSheetItem {
-  id: string;
-  title: string;
-  type: "note" | "snippet";
-  content: string;
-  favourite: boolean;
-}
+type NewCheatSheet = Omit<CheatSheet, "_id">;
 
 export default function AddCheatsheetPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<CheatSheetItem>({
-    id: Date.now().toString(),
+  const { addCheatSheet } = useCheatSheets();
+  const [formData, setFormData] = useState<NewCheatSheet>({
     title: "",
     type: "note",
     content: "",
@@ -49,7 +45,7 @@ export default function AddCheatsheetPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
 
@@ -58,7 +54,8 @@ export default function AddCheatsheetPage() {
     setIsSubmitting(true);
 
     try {
-      router.push("/cheatsheet"); // back to list page
+      await addCheatSheet(formData);
+      router.push("/cheatsheets"); // back to list page
     } catch (err) {
       console.error(err);
       setFormError("Failed to save cheatsheet. Try again.");
@@ -67,9 +64,9 @@ export default function AddCheatsheetPage() {
     }
   };
 
-  const updateFormData = <K extends keyof CheatSheetItem>(
+  const updateFormData = <K extends keyof CheatSheet>(
     field: K,
-    value: CheatSheetItem[K]
+    value: CheatSheet[K]
     ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -82,7 +79,7 @@ export default function AddCheatsheetPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <Button variant="ghost" size="sm" asChild className="w-fit">
-          <Link href="/cheatsheet" className="flex items-center gap-2">
+          <Link href="/cheatsheets" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to Cheatsheet
           </Link>
@@ -124,7 +121,7 @@ export default function AddCheatsheetPage() {
               <Label className="mb-2" htmlFor="type">Type *</Label>
               <Select
                 value={formData.type}
-                onValueChange={(val) => updateFormData("type", val as CheatSheetItem["type"])}
+                onValueChange={(val) => updateFormData("type", val as CheatSheet["type"])}
               >
                 <SelectTrigger
                   className={errors.type ? "border-destructive" : ""}
@@ -201,7 +198,7 @@ export default function AddCheatsheetPage() {
             {isSubmitting ? "Saving..." : "Save Cheatsheet"}
           </Button>
           <Button type="button" variant="outline" asChild>
-            <Link href="/cheatsheet">Cancel</Link>
+            <Link href="/cheatsheets">Cancel</Link>
           </Button>
         </div>
       </form>

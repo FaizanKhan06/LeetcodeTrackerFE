@@ -188,9 +188,9 @@ export default function SignUpPage() {
               )}
             </div>
           </CardContent>
-
+          
           {errors.general && (
-            <p className="text-sm text-destructive text-center">
+            <p className="text-sm text-destructive text-center mt-4">
               {errors.general}
             </p>
           )}

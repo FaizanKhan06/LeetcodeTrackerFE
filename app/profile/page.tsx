@@ -12,10 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Code } from "lucide-react";
-import { getUser } from "@/lib/token-manager";
+import { clearToken, getUser } from "@/lib/token-manager";
 import { authManager } from "@/lib/auth-manager";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -43,7 +45,8 @@ export default function ProfilePage() {
       setName(user.name || "");
       setEmail(user.email || "");
     } else {
-      window.location.href = "/signin";
+      clearToken();
+      router.push("/signin");
     }
   }, []);
 

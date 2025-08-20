@@ -6,15 +6,8 @@ const API_BASE = process.env.NEXT_PUBLIC_BE_API_URL
   ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/auth`
   : "http://localhost:4000/api/auth";
 
-// Helper to handle JSON responses and 401 redirects
+// Helper to handle JSON responses
 async function json<T>(res: Response): Promise<T> {
-  if (res.status === 401) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/signin"; // Redirect to sign-in
-    }
-    throw new Error("Unauthorized");
-  }
-
   if (!res.ok) {
     let err;
     try {
@@ -24,7 +17,6 @@ async function json<T>(res: Response): Promise<T> {
     }
     throw new Error(err);
   }
-
   return res.json() as Promise<T>;
 }
 
@@ -48,6 +40,12 @@ export interface UpdateProfileData {
   confirmPassword?: string;
 }
 
+export interface ResetPasswordData {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export const authManager = {
   signIn: async (data: SignInData): Promise<User> => {
     const res = await fetch(`${API_BASE}/login`, {
@@ -57,7 +55,7 @@ export const authManager = {
     });
 
     const result = await json<{ token: string; user: User }>(res);
-    saveToken(result.token, result.user); // no JSON.stringify needed
+    saveToken(result.token, result.user);
     return result.user;
   },
 
@@ -69,7 +67,7 @@ export const authManager = {
     });
 
     const result = await json<{ token: string; user: User }>(res);
-    saveToken(result.token, result.user); // no JSON.stringify needed
+    saveToken(result.token, result.user);
     return result.user;
   },
 
@@ -87,7 +85,27 @@ export const authManager = {
     });
 
     const result = await json<User>(res);
-    saveWithExpiry<User>("user", result); // store as object, not string
+    saveWithExpiry<User>("user", result);
     return result;
+  },
+
+  requestPasswordReset: async (email: string): Promise<{ message: string }> => {
+    const res = await fetch(`${API_BASE}/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    return json<{ message: string }>(res);
+  },
+
+  resetPassword: async (data: ResetPasswordData): Promise<{ message: string }> => {
+    const res = await fetch(`${API_BASE}/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    return json<{ message: string }>(res);
   },
 };
