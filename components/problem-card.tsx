@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Eye, Calendar, Trash2 } from "lucide-react";
-import type { Problem } from "@/lib/mock-data";
+import { Problem } from "@/lib/problem-manager";
 
 interface ProblemCardProps {
   problem: Problem;
