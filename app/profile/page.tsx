@@ -53,7 +53,7 @@ export default function ProfilePage() {
     };
 
     fetchUser();
-  }, []);
+  }, [getCurrentUserDetails]);
 
   const validate = (section: "name" | "email" | "password") => {
     const newErrors: Record<string, string> = {};
@@ -152,9 +152,12 @@ export default function ProfilePage() {
 
     try {
       await deleteAccount(deletePassword);
-      alert("Account deleted successfully!");
-    } catch (err: any) {
-      alert(err.message || "An unexpected error occurred");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unexpected error occurred");
+      }
     }
   };
 
