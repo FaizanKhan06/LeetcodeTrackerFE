@@ -44,7 +44,7 @@ export function CheetsheetCard({
   };
 
   return (
-    <Card key={cheetsheet._id} className="hover:shadow-md transition-shadow gap-0">
+    <Card className="hover:shadow-md transition-shadow gap-0">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           {/* Left Side: Title & Badge */}

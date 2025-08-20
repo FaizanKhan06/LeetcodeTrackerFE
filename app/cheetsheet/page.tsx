@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
@@ -12,8 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Search, Star } from "lucide-react";
+import { PlusCircle, Search } from "lucide-react";
 import Link from "next/link";
 import { CheatSheet } from "@/lib/cheetsheet-manager";
 import { CheetsheetCard } from "@/components/cheetsheet-card";
@@ -72,17 +70,16 @@ export default function CheatsheetPage() {
         }
     }, []);
 
-    const updateContent = (id: string, content: string) => {
-        setItems(items.map((i) => (i._id === id ? { ...i, content } : i)));
+    // Define once inside CheatsheetPage component
+    const handleFavouriteChange = async (id: string): Promise<boolean> => {
+    setItems((prev) =>
+        prev.map((i) =>
+        i._id === id ? { ...i, favourite: !i.favourite } : i
+        )
+    );
+    return true;
     };
 
-    const toggleFavourite = (id: string) => {
-        setItems(
-            items.map((i) =>
-                i._id === id ? { ...i, favourite: !i.favourite } : i
-            )
-        );
-    };
 
     // Apply search + filters
     const filteredItems = items.filter((item) => {
@@ -180,17 +177,11 @@ export default function CheatsheetPage() {
                     filteredItems.map((item) => (
 
                         <CheetsheetCard
+                            key={item._id}
                             cheetsheet={item}
                             onDelete={async (id) => { console.log("Delete", id); return true; }}
                             onEdit={async (id) => { console.log("Edit", id); return true; }}
-                            onFavouriteChange={async (id) => {
-                                setItems(
-                                    items.map((i) =>
-                                        i._id === id ? { ...i, favourite: !i.favourite } : i
-                                    )
-                                );
-                                return true;
-                            }}
+                            onFavouriteChange={handleFavouriteChange}
                         />
 
                     ))
