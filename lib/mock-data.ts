@@ -1,22 +1,5 @@
-export interface Problem {
-  _id?: string
-  id: string
-  number: number
-  title: string
-  link: string
-  difficulty: "Easy" | "Medium" | "Hard"
-  tags: string[]
-  status: "Solved" | "To Do" | "Reviewing"
-  dateSolved?: string
-  approaches: {
-    title: string
-    description: string
-    code: string
-    language: string
-  }[]
-  notes: string
-}
-
+import { CheatSheet } from "./cheatsheet-manager";
+import { Problem } from "./problem-manager"
 
 export const mockProblems: Problem[] = [
   {
@@ -167,37 +150,40 @@ export const mockProblems: Problem[] = [
   },
 ]
 
-export function getStatistics(problems: Problem[]) {
-  const total = problems.length
-  const solved = problems.filter((p) => p.status === "Solved").length
-  const reviewing = problems.filter((p) => p.status === "Reviewing").length
-  const todo = problems.filter((p) => p.status === "To Do").length
-
-  const easy = problems.filter((p) => p.difficulty === "Easy").length
-  const medium = problems.filter((p) => p.difficulty === "Medium").length
-  const hard = problems.filter((p) => p.difficulty === "Hard").length
-
-  const easySolved = problems.filter((p) => p.difficulty === "Easy" && p.status === "Solved").length
-  const mediumSolved = problems.filter((p) => p.difficulty === "Medium" && p.status === "Solved").length
-  const hardSolved = problems.filter((p) => p.difficulty === "Hard" && p.status === "Solved").length
-
-  const recentActivity = problems
-    .filter((p) => p.dateSolved)
-    .sort((a, b) => new Date(b.dateSolved!).getTime() - new Date(a.dateSolved!).getTime())
-    .slice(0, 5)
-
-  return {
-    total,
-    solved,
-    reviewing,
-    todo,
-    easy,
-    medium,
-    hard,
-    easySolved,
-    mediumSolved,
-    hardSolved,
-    recentActivity,
-    solvedPercentage: total > 0 ? Math.round((solved / total) * 100) : 0,
+export const mockCheatsheet: CheatSheet[] = [
+  {
+    _id: "1",
+    title: "Two Pointers Pattern",
+    type: "note",
+    content: `- Initialize left & right pointers
+- Move them based on condition
+- Useful for: sorted arrays, palindrome checks, sliding windows`,
+    favourite: false,
+  },
+  {
+    _id: "2",
+    title: "Binary Search Template",
+    type: "snippet",
+    content: `function binarySearch(arr, target) {
+  let left = 0, right = arr.length - 1;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) return mid;
+    else if (arr[mid] < target) left = mid + 1;
+    else right = mid - 1;
   }
-}
+  return -1;
+}`,
+    favourite: true,
+  },
+  {
+    _id: "3",
+    title: "Dynamic Programming Reminder",
+    type: "note",
+    content: `- Define subproblem
+- Write recurrence relation
+- Identify base cases
+- Optimize with memoization/tabulation`,
+    favourite: false,
+  },
+];

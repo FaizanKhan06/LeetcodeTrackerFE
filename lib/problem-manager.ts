@@ -1,7 +1,25 @@
 "use client"
 
-import type { Problem } from "./mock-data"
 import { getToken } from "./token-manager"
+
+export interface Problem {
+  _id?: string
+  id: string
+  number: number
+  title: string
+  link: string
+  difficulty: "Easy" | "Medium" | "Hard"
+  tags: string[]
+  status: "Solved" | "To Do" | "Reviewing"
+  dateSolved?: string
+  approaches: {
+    title: string
+    description: string
+    code: string
+    language: string
+  }[]
+  notes: string
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BE_API_URL
   ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/problems`
@@ -98,4 +116,39 @@ export async function deleteProblem(id: string): Promise<boolean> {
   })
   if (res.status === 404) return false
   return true
+}
+
+export function getStatistics(problems: Problem[]) {
+  const total = problems.length
+  const solved = problems.filter((p) => p.status === "Solved").length
+  const reviewing = problems.filter((p) => p.status === "Reviewing").length
+  const todo = problems.filter((p) => p.status === "To Do").length
+
+  const easy = problems.filter((p) => p.difficulty === "Easy").length
+  const medium = problems.filter((p) => p.difficulty === "Medium").length
+  const hard = problems.filter((p) => p.difficulty === "Hard").length
+
+  const easySolved = problems.filter((p) => p.difficulty === "Easy" && p.status === "Solved").length
+  const mediumSolved = problems.filter((p) => p.difficulty === "Medium" && p.status === "Solved").length
+  const hardSolved = problems.filter((p) => p.difficulty === "Hard" && p.status === "Solved").length
+
+  const recentActivity = problems
+    .filter((p) => p.dateSolved)
+    .sort((a, b) => new Date(b.dateSolved!).getTime() - new Date(a.dateSolved!).getTime())
+    .slice(0, 5)
+
+  return {
+    total,
+    solved,
+    reviewing,
+    todo,
+    easy,
+    medium,
+    hard,
+    easySolved,
+    mediumSolved,
+    hardSolved,
+    recentActivity,
+    solvedPercentage: total > 0 ? Math.round((solved / total) * 100) : 0,
+  }
 }

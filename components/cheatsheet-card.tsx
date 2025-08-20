@@ -15,23 +15,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheatSheet } from "@/lib/cheetsheet-manager";
+import { CheatSheet } from "@/lib/cheatsheet-manager";
 
 interface CheatSheetCardProps {
-  cheetsheet: CheatSheet;
+  cheatsheet: CheatSheet;
   onDelete: (id: string) => Promise<boolean>;
   onEdit: (updated: CheatSheet) => Promise<boolean>;
   onFavouriteChange: (id: string) => Promise<boolean>;
 }
 
-export function CheetsheetCard({
-  cheetsheet,
+export function CheatsheetCard({
+  cheatsheet,
   onDelete,
   onEdit,
   onFavouriteChange,
 }: CheatSheetCardProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<CheatSheet>(cheetsheet);
+  const [formData, setFormData] = useState<CheatSheet>(cheatsheet);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,13 +47,13 @@ export function CheetsheetCard({
   };
 
   const handleDelete = async () => {
-    if (!cheetsheet._id) return;
-    await onDelete(cheetsheet._id);
+    if (!cheatsheet._id) return;
+    await onDelete(cheatsheet._id);
   };
 
   const toggleFavourite = async () => {
-    if (!cheetsheet._id) return;
-    await onFavouriteChange(cheetsheet._id);
+    if (!cheatsheet._id) return;
+    await onFavouriteChange(cheatsheet._id);
   };
 
   const validateForm = () => {
@@ -178,7 +178,7 @@ export function CheetsheetCard({
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setFormData(cheetsheet); // reset edits
+                  setFormData(cheatsheet); // reset edits
                   setIsEditing(false);
                 }}
               > Cancel
@@ -191,9 +191,9 @@ export function CheetsheetCard({
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-lg">{cheetsheet.title}</CardTitle>
-                <Badge className={getTypeColor(cheetsheet.type)}>
-                  {cheetsheet.type}
+                <CardTitle className="text-lg">{cheatsheet.title}</CardTitle>
+                <Badge className={getTypeColor(cheatsheet.type)}>
+                  {cheatsheet.type}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export function CheetsheetCard({
                 <Button variant="ghost" size="icon" onClick={toggleFavourite}>
                   <Star
                     className={`h-5 w-5 ${
-                      cheetsheet.favourite
+                      cheatsheet.favourite
                         ? "text-yellow-500 fill-yellow-500"
                         : "text-muted-foreground"
                     }`}
@@ -228,7 +228,7 @@ export function CheetsheetCard({
           </CardHeader>
           <CardContent className="space-y-4">
             <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm">
-              <code>{cheetsheet.content}</code>
+              <code>{cheatsheet.content}</code>
             </pre>
           </CardContent>
         </>

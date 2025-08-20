@@ -58,7 +58,7 @@ export default function AddCheatsheetPage() {
     setIsSubmitting(true);
 
     try {
-      router.push("/cheetsheet"); // back to list page
+      router.push("/cheatsheet"); // back to list page
     } catch (err) {
       console.error(err);
       setFormError("Failed to save cheatsheet. Try again.");
@@ -82,7 +82,7 @@ export default function AddCheatsheetPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <Button variant="ghost" size="sm" asChild className="w-fit">
-          <Link href="/cheetsheet" className="flex items-center gap-2">
+          <Link href="/cheatsheet" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to Cheatsheet
           </Link>
@@ -201,7 +201,7 @@ export default function AddCheatsheetPage() {
             {isSubmitting ? "Saving..." : "Save Cheatsheet"}
           </Button>
           <Button type="button" variant="outline" asChild>
-            <Link href="/cheetsheet">Cancel</Link>
+            <Link href="/cheatsheet">Cancel</Link>
           </Button>
         </div>
       </form>

@@ -21,7 +21,7 @@ import { clearToken } from "@/lib/token-manager";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "Problems", href: "/problems", icon: List },
-  { name: "Cheetsheet", href: "/cheetsheet", icon: Book },
+  { name: "cheatsheet", href: "/cheatsheet", icon: Book },
   { name: "Profile", href: "/profile", icon: User },
 ];
 

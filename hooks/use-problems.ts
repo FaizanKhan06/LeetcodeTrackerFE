@@ -1,15 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import type { Problem } from "@/lib/mock-data"
-import { getStatistics } from "@/lib/mock-data"
 import {
   getProblems,
   addProblem,
   updateProblem,
   deleteProblem,
   getProblem,
-} from "@/lib/data-manager"
+  Problem,
+  getStatistics,
+} from "@/lib/problem-manager"
 
 export function useProblems() {
   const [problems, setProblems] = useState<Problem[]>([])

@@ -110,20 +110,23 @@ export default function ProblemsPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Problems</h1>
-          <p className="text-muted-foreground">
-            Browse and manage your LeetCode problems.
-          </p>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Problems</h1>
+            <p className="text-muted-foreground">
+              Browse and manage your LeetCode problems.
+            </p>
+          </div>
+          <Link href="/add-problem">
+            <Button className="flex items-center gap-2 cursor-pointer">
+              <PlusCircle className="hidden sm:inline h-4 w-4" />
+              <span className="hidden sm:inline">Add Problem</span>
+              <span className="inline sm:hidden">Add New</span>
+            </Button>
+          </Link>
         </div>
-        <Link href="/add-problem">
-          <Button className="flex items-center gap-2 cursor-pointer">
-            <PlusCircle className="hidden sm:inline h-4 w-4" />
-            <span className="hidden sm:inline">Add Problem</span>
-            <span className="inline sm:hidden">Add New</span>
-          </Button>
-        </Link>
-      </div>
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Loading Problems...</p>
+        </div>
       </div>
     );
   }
