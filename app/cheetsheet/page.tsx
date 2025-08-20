@@ -55,7 +55,7 @@ const sampleData: CheatSheet[] = [
 ];
 
 export default function CheatsheetPage() {
-    const [items, setItems] = useState<CheatSheet[]>([]);
+    const [cheetsSheets, setCheetSheets] = useState<CheatSheet[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState<"all" | "note" | "snippet">("all");
     const [filterFav, setFilterFav] = useState<"all" | "favourite">("all");
@@ -64,34 +64,75 @@ export default function CheatsheetPage() {
     useEffect(() => {
         const stored = localStorage.getItem("cheatsheet");
         if (stored) {
-            setItems(JSON.parse(stored));
+            setCheetSheets(JSON.parse(stored));
         } else {
-            setItems(sampleData);
+            setCheetSheets(sampleData);
         }
     }, []);
 
-    // Define once inside CheatsheetPage component
+    const handleDelete = async (id: string): Promise<boolean> => {
+        try {
+            // await fetch(`/api/cheatsheet/${id}`, { method: "DELETE" });
+            setCheetSheets((prev) => prev.filter((i) => i._id !== id));
+            return true;
+        } catch (err) {
+            console.error("Delete failed", err);
+            return false;
+        }
+    };
+
+    const handleEdit = async (updated: CheatSheet): Promise<boolean> => {
+        try {
+            // await fetch(`/api/cheatsheet/${updated._id}`, {
+            //     method: "PUT",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify(updated),
+            // });
+            setCheetSheets((prev) =>
+                prev.map((i) => (i._id === updated._id ? updated : i))
+            );
+            return true;
+        } catch (err) {
+            console.error("Edit failed", err);
+            return false;
+        }
+    };
+
     const handleFavouriteChange = async (id: string): Promise<boolean> => {
-    setItems((prev) =>
-        prev.map((i) =>
-        i._id === id ? { ...i, favourite: !i.favourite } : i
-        )
-    );
-    return true;
+        try {
+            const cheetSheet = cheetsSheets.find((i) => i._id === id);
+            if (!cheetSheet) return false;
+
+            const updated = { ...cheetSheet, favourite: !cheetSheet.favourite };
+
+            // await fetch(`/api/cheatsheet/${id}`, {
+            //     method: "PATCH",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({ favourite: updated.favourite }),
+            // });
+
+            setCheetSheets((prev) =>
+                prev.map((i) => (i._id === id ? updated : i))
+            );
+            return true;
+        } catch (err) {
+            console.error("Fav toggle failed", err);
+            return false;
+        }
     };
 
 
     // Apply search + filters
-    const filteredItems = items.filter((item) => {
-        const matchesSearch = item.title
+    const filteredCheetSheets = cheetsSheets.filter((cheetSheet) => {
+        const matchesSearch = cheetSheet.title
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
 
         const matchesType =
-            filterType === "all" ? true : item.type === filterType;
+            filterType === "all" ? true : cheetSheet.type === filterType;
 
         const matchesFav =
-            filterFav === "all" ? true : item.favourite;
+            filterFav === "all" ? true : cheetSheet.favourite;
 
         return matchesSearch && matchesType && matchesFav;
     });
@@ -171,23 +212,29 @@ export default function CheatsheetPage() {
                 </div>
             </div>
 
+            {/* Results Summary */}
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                    Showing {filteredCheetSheets.length} of {cheetsSheets.length} cheatsheets
+                </p>
+            </div>
+
+
             {/* Display all items */}
             <div className="space-y-4">
-                {filteredItems.length > 0 ? (
-                    filteredItems.map((item) => (
-
+                {filteredCheetSheets.length > 0 ? (
+                    filteredCheetSheets.map((cheetSheet) => (
                         <CheetsheetCard
-                            key={item._id}
-                            cheetsheet={item}
-                            onDelete={async (id) => { console.log("Delete", id); return true; }}
-                            onEdit={async (id) => { console.log("Edit", id); return true; }}
+                            key={cheetSheet._id}
+                            cheetsheet={cheetSheet}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
                             onFavouriteChange={handleFavouriteChange}
                         />
-
                     ))
                 ) : (
                     <p className="text-center text-muted-foreground">
-                        No items found for your search/filter.
+                        No CheetsSheets found for your search/filter.
                     </p>
                 )}
             </div>
