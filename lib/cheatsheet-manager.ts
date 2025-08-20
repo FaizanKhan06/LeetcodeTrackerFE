@@ -2,9 +2,9 @@
 "use client"
 
 import { mockCheatsheet } from "./mock-data";
-import { getToken } from "./token-manager"
+// import { getToken } from "./token-manager"
 
-let mockCheatsheetStore = [...mockCheatsheet];
+const mockCheatsheetStore = [...mockCheatsheet];
 
 export interface CheatSheet {
   _id: string
@@ -14,35 +14,35 @@ export interface CheatSheet {
   favourite: boolean;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_BE_API_URL
-  ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/CheatSheets`
-  : "http://localhost:4000/api/CheatSheets";
+// const BASE_URL = process.env.NEXT_PUBLIC_BE_API_URL
+//   ? `${process.env.NEXT_PUBLIC_BE_API_URL}/api/CheatSheets`
+//   : "http://localhost:4000/api/CheatSheets";
 
 // Helper to handle JSON responses and 401 redirects
-async function json<T>(res: Response): Promise<T> {
-  if (res.status === 401) {
-    // Navigate to /signin
-    if (typeof window !== "undefined") {
-      window.location.href = "/signin"
-    }
-    throw new Error("Unauthorized")
-  }
+// async function json<T>(res: Response): Promise<T> {
+//   if (res.status === 401) {
+//     // Navigate to /signin
+//     if (typeof window !== "undefined") {
+//       window.location.href = "/signin"
+//     }
+//     throw new Error("Unauthorized")
+//   }
 
-  if (!res.ok) {
-    let err
-    try {
-      err = (await res.json()).error
-    } catch {
-      err = res.statusText
-    }
-    throw new Error(err)
-  }
-  return res.json() as Promise<T>
-}
+//   if (!res.ok) {
+//     let err
+//     try {
+//       err = (await res.json()).error
+//     } catch {
+//       err = res.statusText
+//     }
+//     throw new Error(err)
+//   }
+//   return res.json() as Promise<T>
+// }
 
 // Get all cheatSheets
 export async function getCheatSheets(): Promise<CheatSheet[]> {
-  const token = getToken()
+  // const token = getToken()
   // const res = await fetch(BASE_URL, {
   //   method: "GET",
   //   headers: {
@@ -58,7 +58,7 @@ export async function getCheatSheets(): Promise<CheatSheet[]> {
 
 // Get one problem
 export async function getCheatSheet(id: string): Promise<CheatSheet | null> {
-  const token = getToken()
+  // const token = getToken()
   // const res = await fetch(`${BASE_URL}/${id}`, {
   //   method: "GET",
   //   headers: {
@@ -76,7 +76,7 @@ export async function getCheatSheet(id: string): Promise<CheatSheet | null> {
 
 // Add a new problem
 export async function addCheatSheet(problemData: Omit<CheatSheet, "id">): Promise<CheatSheet> {
-  const token = getToken()
+  // const token = getToken()
   // const res = await fetch(BASE_URL, {
   //   method: "POST",
   //   headers: {
@@ -100,7 +100,7 @@ export async function addCheatSheet(problemData: Omit<CheatSheet, "id">): Promis
 
 // Update existing problem
 export async function updateCheatSheet(id: string, updates: Partial<CheatSheet>): Promise<CheatSheet> {
-  const token = getToken()
+  // const token = getToken()
   // const res = await fetch(`${BASE_URL}/${id}`, {
   //   method: "PUT",
   //   headers: { 
@@ -121,7 +121,7 @@ export async function updateCheatSheet(id: string, updates: Partial<CheatSheet>)
 
 // Delete a problem
 export async function deleteCheatSheet(id: string): Promise<boolean> {
-  const token = getToken()
+  // const token = getToken()
   // const res = await fetch(`${BASE_URL}/${id}`, { 
   //   method: "DELETE", 
   //   headers: {
