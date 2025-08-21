@@ -33,9 +33,11 @@ function DarkModeToggle() {
     const savedMode = localStorage.getItem("dark-mode");
     if (savedMode === "true") {
       document.body.classList.add("dark");
+      setThemeColor("#0a0a0a");
       setIsDark(true);
     } else {
       document.body.classList.remove("dark");
+      setThemeColor("#ffffff");
       setIsDark(false);
       if (savedMode === null) {
         // default to dark mode off
@@ -64,7 +66,7 @@ function DarkModeToggle() {
     } else {
       document.body.classList.add("dark");
       localStorage.setItem("dark-mode", "true");
-      setThemeColor("#000000");
+      setThemeColor("#0a0a0a");
       setIsDark(true);
     }
   };
