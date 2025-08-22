@@ -347,8 +347,6 @@ Here is some **bold text**, some *italic text*, and some _underlined text_.
 ## About Me
 I am a developer specializing in web and AI.
 
-||| thickness=3px height=150px color=gray
-
 @column-split
 
 ## Projects
@@ -390,6 +388,5 @@ Thank you for visiting!
 | Lists                  | `- item` / `1. item`                              | Unordered and ordered lists       |   |                                         |                            |
 | Image                  | `@image: photo.jpg width=200px radius=10px`       | Image insertion with styling      |   |                                         |                            |
 | Horizontal Line        | `--- width=75% thickness=3px color=gray`          | Horizontal separator with styling |   |                                         |                            |
-| Vertical Line          | \`                                                |                                   |   | thickness=3px height=120px color=blue\` | Vertical line with styling |
 | Layout - Single Column | `@layout: single { ... }`                         | Single column block               |   |                                         |                            |
 | Layout - Dual Column   | `@layout: dual 30% 70% { ... @column-split ... }` | Two columns with custom widths    |   |                                         |                            |
