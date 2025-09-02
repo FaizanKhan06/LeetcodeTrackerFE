@@ -120,3 +120,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom scrollbar */
+.preview-scroll {
+  scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #9ca3af #f3f4f6;   /* Firefox thumb + track */
+}
+
+.preview-scroll::-webkit-scrollbar {
+  width: 8px;    /* thickness */
+}
+
+.preview-scroll::-webkit-scrollbar-track {
+  background: #f3f4f6; /* track */
+  border-radius: 10px;
+}
+
+.preview-scroll::-webkit-scrollbar-thumb {
+  background: #9ca3af; /* thumb */
+  border-radius: 10px;
+  border: 2px solid #f3f4f6; /* padding effect */
+}
+
+.preview-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6b7280; /* darker on hover */
+}
+
+.a4-page {
+  width: 794px;   /* A4 width @ 96dpi */
+  height: 1122px; /* A4 height @ 96dpi */
+  background: white;
+  margin: 1rem auto;
+  padding: 2rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  page-break-after: always;
+}
