@@ -112,7 +112,7 @@ export default function ResumePage() {
             <BookIcon /> Templates
           </Button>
         </CardHeader>
-        <CardContent className="h-full space-y-6 px-0 rounded-lg overflow-hidden">
+        <CardContent className="h-full min-h-[500px] space-y-6 px-0 rounded-lg overflow-hidden">
           <Editor
             defaultLanguage="html"
             value={markup}
